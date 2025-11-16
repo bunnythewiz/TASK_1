@@ -1,0 +1,76 @@
+# ========================================
+# Receipt Detection Evaluation Config
+# ========================================
+
+name: DBNet_Receipt_Evaluation
+seed: 1234
+distributed: false
+
+# Model Architecture (must match training)
+arch:
+  type: Model
+  backbone:
+    type: resnet18
+    pretrained: false
+    in_channels: 3
+  
+  neck:
+    type: FPN
+    inner_channels: 256
+  
+  head:
+    type: DBHead
+    out_channels: 2
+    k: 50
+
+# Post-processing
+post_processing:
+  type: SegDetectorRepresenter
+  args:
+    thresh: 0.3
+    box_thresh: 0.6
+    max_candidates: 1000
+    unclip_ratio: 1.5
+
+# Metric
+metric:
+  type: QuadMetric
+  args:
+    is_output_polygon: false
+
+# Test Dataset
+dataset:
+  validate:
+    dataset:
+      type: ICDAR2015Dataset
+      args:
+        data_path:
+          - /storage/mediScan/fm/TASK_1/datasets/test
+        img_mode: RGB
+        pre_processes:
+          - type: MakeBorderMap
+            args:
+              shrink_ratio: 0.4
+              thresh_min: 0.3
+              thresh_max: 0.7
+          - type: MakeShrinkMap
+            args:
+              shrink_ratio: 0.4
+              min_text_size: 8
+        filter_keys:
+          - img_path
+          - img_name
+          - text_polys
+          - texts
+          - ignore_tags
+        ignore_tags:
+          - '*'
+          - '###'
+        transforms: []
+    
+    loader:
+      batch_size: 1
+      shuffle: false
+      pin_memory: false
+      num_workers: 0
+      drop_last: false

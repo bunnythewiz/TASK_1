@@ -1,0 +1,32 @@
+# Python virtual environment
+venv/
+env/
+ENV/
+*.pyc
+__pycache__/
+
+# Dataset images (keep annotations, ignore images)
+datasets/train/images/
+datasets/test/images/
+datasets/*/images/
+
+# Model checkpoints (EXCLUDE these)
+output/**/checkpoint/
+*.pth
+*.pt
+*.ckpt
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp

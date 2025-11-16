@@ -1,0 +1,137 @@
+# ========================================
+# Receipt Detection Config - Server
+# Path: /storage/mediScan/fm/TASK_1
+# ========================================
+
+name: DBNet_Receipt_Detection
+seed: 1234
+distributed: false
+
+
+# ========================================
+# Model Architecture
+# ========================================
+arch:
+  type: Model
+  backbone:
+    type: resnet18
+    pretrained: true
+    in_channels: 3
+  
+  neck:
+    type: FPN
+    inner_channels: 256
+  
+  head:
+    type: DBHead
+    out_channels: 2
+    k: 50
+
+
+# ========================================
+# Loss Function
+# ========================================
+loss:
+  type: DBLoss
+  alpha: 1.0
+  beta: 10
+  ohem_ratio: 3
+  reduction: mean
+  eps: 1e-6
+
+
+# ========================================
+# Post-processing
+# ========================================
+post_processing:
+  type: SegDetectorRepresenter
+  args:
+    thresh: 0.1
+    box_thresh: 0.1
+    max_candidates: 1000
+    unclip_ratio: 1.5
+
+
+# ========================================
+# Evaluation Metric
+# ========================================
+metric:
+  type: QuadMetric
+  args:
+    is_output_polygon: false
+
+
+# ========================================
+# Training Configuration
+# ========================================
+trainer:
+  epochs: 50
+  seed: 1234
+  log_iter: 10
+  show_images_iter: 50
+  resume_checkpoint: ''
+  finetune_checkpoint: ''
+  output_dir: /storage/mediScan/fm/TASK_1/output/DBNet_Receipt_Detection
+  tensorboard: true
+  save_interval: 10
+
+
+# ========================================
+# Optimizer
+# ========================================
+optimizer:
+  type: Adam
+  args:
+    lr: 0.001
+    weight_decay: 0.0
+    amsgrad: false
+
+
+# ========================================
+# Learning Rate Scheduler
+# ========================================
+lr_scheduler:
+  type: WarmupPolyLR
+  args:
+    warmup_epoch: 2
+
+
+# ========================================
+# Dataset Configuration
+# ========================================
+dataset:
+  train:
+    dataset:
+      type: ICDAR2015Dataset
+      args:
+        data_path:
+          - /storage/mediScan/fm/TASK_1/datasets/train
+        img_mode: RGB
+        pre_processes:
+          - type: MakeBorderMap
+            args:
+              shrink_ratio: 0.4
+              thresh_min: 0.3
+              thresh_max: 0.7
+          - type: MakeShrinkMap
+            args:
+              shrink_ratio: 0.4
+              min_text_size: 8
+        filter_keys:
+          - img_path
+          - img_name
+          - text_polys
+          - texts
+          - ignore_tags
+        ignore_tags:
+          - '*'
+          - '###'
+        
+        transforms: []
+    
+    loader:
+      batch_size: 8
+      shuffle: true
+      pin_memory: true
+      num_workers: 0
+      drop_last: false
