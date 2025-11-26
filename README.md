@@ -277,7 +277,5 @@ TASK_1/
 ├── eval.py                        # Evaluation script
 ├── predict.py                     # Inference script
 ├── requirement.txt                # Python dependencies
-├── environment.yml                # Conda environment
-├── README.md                      # This file
-└── LICENSE.md                     # Apache 2.0 License
+└── README.md                      # This file
 ```
