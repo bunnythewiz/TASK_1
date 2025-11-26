@@ -2,7 +2,6 @@
 
 ![PyTorch](https://img.shields.io/badge/PyTorch-2.7.1-EE4C2C?style=flat&logo=pytorch)
 ![Python](https://img.shields.io/badge/Python-3.13-3776AB?style=flat&logo=python)
-![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)
 
 Real-time text detection on scanned receipts using Differentiable Binarization Network (DBNet) with ResNet-18 backbone and Feature Pyramid Network.
 
