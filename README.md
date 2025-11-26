@@ -230,6 +230,7 @@ loss:
 ```
 tensorboard --logdir output/DBNet_Receipt_Detection/
 ```
+---
 
 ## 📂 Project Structure
 
